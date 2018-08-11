@@ -4,5 +4,13 @@
   "dependencies": {
     "browserify": "^16.2.2",
     "phaser": "^3.11.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "watchify": "^3.11.0"
+  },
+  "scripts": {
+    "build": "browserify -d src/main.js -o build.js",
+    "watch": "watchify -d src/main.js -o build.js"
   }
 }
