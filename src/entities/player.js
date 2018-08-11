@@ -7,6 +7,7 @@ module.exports = class Player extends Phaser.Physics.Arcade.Sprite {
         super(scene, x, y, 'player');
         this.cursors = scene.input.keyboard.createCursorKeys();
         this.direction = false; // true = right
+        this.isDrinking = false;
 
         var particles = scene.add.particles('particle');
 
@@ -14,6 +15,8 @@ module.exports = class Player extends Phaser.Physics.Arcade.Sprite {
         this.setupEmitter();
         //this.setScale(3);
     }
+
+    setDrinking(v) { this.isDrinking = v }
 
 
     setupEmitter() {
@@ -32,20 +35,22 @@ module.exports = class Player extends Phaser.Physics.Arcade.Sprite {
         if (this.cursors.left.isDown) {
             this.setVelocityX(-160);
             this.direction = false;
-            this.setFrame(2)
         }
         else if (this.cursors.right.isDown) {
             this.setVelocityX(160);
             this.direction = true;
-            this.setFrame(3)
         }
         else {
             this.setVelocityX(0);
         }
 
         if (this.cursors.up.isDown && this.body.touching.down) {
-            this.setVelocityY(-330);
+            this.setVelocityY(-400);
         } 
+
+        this.setFrame((this.direction ? 3 : 2) - (this.isDrinking ? 2 : 0))
+
+        this.setDrinking(false)
 
 
     }

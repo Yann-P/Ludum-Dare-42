@@ -9,7 +9,7 @@ module.exports = class Light extends Phaser.GameObjects.Sprite {
     }
 
     setRadius(r) {
-        this.setScale(r / 300)
+        this.setScale(r / 300);
     }
 
 }

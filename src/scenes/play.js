@@ -1,42 +1,57 @@
 const Scene = require('phaser').Scene;
 const Player = require('../entities/player.js');
 const Light = require('../entities/light.js');
+const Petrol = require('../entities/petrol.js');
 
 
 module.exports = class Play extends Scene {
 
-    constructor(levelId = 1) {
+    constructor() {
         super('PlayScene');
-        this.levelId = levelId;
     }
 
     preload() {
         this.load.spritesheet('player', 'assets/player.png', { frameWidth: 46, frameHeight: 34 });
 
-        this.load.image('bg', 'assets/bg.png');
-        this.load.image('light', 'assets/light.png');
-
-        this.load.image('particle', 'assets/particle.png');
-
-
-        this.load.image('platform', 'assets/platform.png');
+        for(const n of ['bg', 'light', 'particle', 'bubble', 'platform', 'petrol'])
+            this.load.image(n,  `assets/${n}.png`);
 
         for (let i = 1; i <= 1; i++) {
             this.load.json(`level-${i}`, `maps/${i}.json`);
         }
     }
 
-    create() {
+    create(data) {
+        this.levelId = data.levelId || 1;
         this.player = null;
-        this.platformsGroup = this.physics.add.group();
+        this.platformsGroup = this.add.group();
+        this.petrolGroup = this.add.group();
+
         this.background = this.add.tileSprite(0, 0, 800, 600, 'bg').setScale(3)
-        const {lx, ly} = this.loadLevel();
+        this.lightRadius = 300;
+
+        const { lx, ly } = this.loadLevel();
         this.setupLight(lx, ly);
+        this.setLightRadius(3000)
+
+        this.physics.add.collider(this.petrolGroup, this.player, (pe, pl) => {
+            pl.setDrinking(true);
+            pe.height-=.5
+            pe.y+=.5
+            pe.body.y++
+            pe.body.height--
+
+            //pe.body.updateBounds();
+        });
+    }
+
+    setLightRadius(r) {
+        this.lightRadius = r;
+        this.light.setRadius(r);
     }
 
     setupLight(x, y) {
         this.light = new Light(this, x, y)
-        this.light.setRadius(100)
         this.add.existing(this.light)
     }
 
@@ -55,40 +70,59 @@ module.exports = class Play extends Scene {
                 w = p.width * CONFIG.TILESIZE,
                 h = p.height * CONFIG.TILESIZE;
 
-            if (p.type === 'player') {
-                this.player = new Player(this, x, y);
-                this.add.existing(this.player)
-                this.physics.add.existing(this.player);
-                this.physics.add.collider(this.platformsGroup, this.player);
-                continue;
+            switch (p.type) {
+                case 'player':
+                    this.addPlayer(x, y, w, h)
+                    break;
+
+                case 'light':
+                    lx = x, ly = y; break;
+                case 'petrol':
+                    this.addPetrol(x, y, w, h);
+                    break;
+                default:
+                    this.addPlatform(x, y, w, h)
+
             }
-
-            else if (p.type === 'light') {
-                lx = x, ly = y;
-            }
-
-
-            const sprite = this.add.sprite(
-                x,
-                y,
-                'platform')
-            sprite.setSize(w, h);
-            sprite.setScale(3);
-
-            this.physics.add.existing(sprite);
-            this.platformsGroup.add(sprite);
-
-            sprite.body.immovable = true;
-            sprite.body.allowGravity = false
-            sprite.body.checkCollision.down = false;
-
         }
         return { lx, ly };
 
     }
 
+    addPlayer(x, y, w, h) {
+        this.player = new Player(this, x, y);
+        this.add.existing(this.player)
+        this.physics.add.existing(this.player);
+        this.physics.add.collider(this.platformsGroup, this.player);
+    }
+
+    addPetrol(x, y, w, h) {
+        const petrol = new Petrol(this, x, y, w, h)
+        //this.petrolGroup.add(petrol);
+    }
+
+    addPlatform(x, y, w, h) {
+        const sprite = this.add.tileSprite(
+            x,
+            y,
+            w,
+            h,
+            'platform')
+
+        sprite.setOrigin(0,0)
+        sprite.setScale(3);
+        
+        this.physics.add.existing(sprite, false);
+        this.platformsGroup.add(sprite);
+        sprite.setSize(w/3, h/3);
+
+        sprite.body.immovable = true;
+        sprite.body.allowGravity = false
+        sprite.body.checkCollision.down = false;
+    }
+
     update() {
-        this.light.x = this.player.x,         this.light.y = this.player.y
+        this.light.x = this.player.x, this.light.y = this.player.y
 
         this.player.update();
     }
