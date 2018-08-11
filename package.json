@@ -6,7 +6,6 @@
     "phaser": "^3.11.0"
   },
   "devDependencies": {
-    "gulp": "^3.9.1",
     "watchify": "^3.11.0"
   },
   "scripts": {
