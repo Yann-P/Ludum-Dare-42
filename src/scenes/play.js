@@ -10,7 +10,12 @@ module.exports = class Play extends Scene {
     }
 
     preload() {
-        this.load.image('test', 'assets/a.png');
+        this.load.spritesheet('player', 'assets/player.png', { frameWidth: 46, frameHeight: 34 });
+
+        this.load.image('bg', 'assets/bg.png');
+        this.load.image('particle', 'assets/particle.png');
+
+
         this.load.image('platform', 'assets/platform.png');
 
         for(let i = 1; i <= 1; i++) {
@@ -21,6 +26,7 @@ module.exports = class Play extends Scene {
     create() {
         this.player = null;
         this.platformsGroup = this.physics.add.group();
+        this.background = this.add.tileSprite(0, 0, 800, 600, 'bg').setScale(3)
         this.loadLevel();
     }
 
@@ -40,6 +46,7 @@ module.exports = class Play extends Scene {
             
             if(p.type === 'player') {
                this.player = new Player(this, 50, 50);
+               this.add.existing(this.player)
                this.physics.add.existing(this.player);
                this.physics.add.collider(this.platformsGroup, this.player);
                continue;
