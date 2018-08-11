@@ -17,14 +17,11 @@ module.exports = class Player extends Phaser.Physics.Arcade.Sprite {
 
 
     setupEmitter() {
-        
-
         this.pEmitter.setSpeed(0);
         this.pEmitter.setLifespan({min: 500, max: 1000});
         this.pEmitter.setScale({min: 1, max: 4});
         this.pEmitter.setAlpha({ start: .7, end: 0, ease: 'Expo.easeIn' });
         this.pEmitter.setFrequency(100)
-        
     }
 
     update() {

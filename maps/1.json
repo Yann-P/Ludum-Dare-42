@@ -58,7 +58,7 @@
                  "visible":true,
                  "width":1,
                  "x":7,
-                 "y":0
+                 "y":5
                 }, 
                 {
                  "height":2,
@@ -68,8 +68,8 @@
                  "type":"petrol",
                  "visible":true,
                  "width":1,
-                 "x":13,
-                 "y":8
+                 "x":28,
+                 "y":9
                 }, 
                 {
                  "height":1,
@@ -88,7 +88,7 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":28,
+ "nextobjectid":30,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.0.3",

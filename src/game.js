@@ -10,7 +10,7 @@ class Game extends Phaser.Game {
             pixelArt: true,
             scene: [ Play ],
             render: {
-                antialias: false
+                antialias : false
             },
             physics: {
                 default: 'arcade',
