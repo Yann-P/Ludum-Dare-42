@@ -1,0 +1,8 @@
+{
+  "name": "ld42",
+  "private": "true",
+  "dependencies": {
+    "browserify": "^16.2.2",
+    "phaser": "^3.11.0"
+  }
+}
