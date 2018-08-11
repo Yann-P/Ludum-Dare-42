@@ -13,8 +13,8 @@
                  "type":"",
                  "visible":true,
                  "width":33,
-                 "x":10,
-                 "y":15
+                 "x":7,
+                 "y":2
                 }, 
                 {
                  "height":1,
@@ -24,8 +24,8 @@
                  "type":"",
                  "visible":true,
                  "width":27,
-                 "x":4,
-                 "y":24
+                 "x":1,
+                 "y":11
                 }, 
                 {
                  "height":1,
@@ -35,8 +35,8 @@
                  "type":"",
                  "visible":true,
                  "width":1,
-                 "x":10,
-                 "y":17
+                 "x":7,
+                 "y":4
                 }, 
                 {
                  "height":1,
@@ -46,8 +46,8 @@
                  "type":"flame",
                  "visible":true,
                  "width":1,
-                 "x":27,
-                 "y":14
+                 "x":24,
+                 "y":1
                 }, 
                 {
                  "height":1,
@@ -57,8 +57,8 @@
                  "type":"player",
                  "visible":true,
                  "width":1,
-                 "x":10,
-                 "y":14
+                 "x":7,
+                 "y":1
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -66,7 +66,7 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":21,
+ "nextobjectid":22,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.0.3",

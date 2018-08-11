@@ -8,7 +8,14 @@ class Game extends Phaser.Game {
             width: 900*3,
             height: 600*3,
             pixelArt: true,
-            scene: [ Play ]
+            scene: [ Play ],
+            physics: {
+                default: 'arcade',
+                arcade: {
+                    debug: true,
+                    gravity: { y: 1000 }
+                }
+            },
         });
     }
 
