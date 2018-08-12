@@ -62,15 +62,20 @@ module.exports = class Play extends Phaser.Scene {
 
         if(!g.device.os.desktop) { // huge hack lol
         this.input.on('pointerdown',  (pointer) => {
-            if(pointer.y < this.sys.canvas.height * 3/4) {
+            if(pointer.y < this.sys.canvas.height *3/4) {
                 this.player.gup = true;
-            } else if(pointer.x < this.sys.canvas.width / 2) {
-                this.player.gleft = true;
-                this.player.gright = false;
-            } if(pointer.x > this.sys.canvas.width / 2) {
-                this.player.gright = true;
-                this.player.gleft = false;
+            } 
+            
+            
+            if(pointer.y > this.sys.canvas.height /3) {
+                if(pointer.x < this.sys.canvas.width / 2) {
+                    this.player.gleft = true;
+                    this.player.gright = false;
+                } if(pointer.x > this.sys.canvas.width / 2) {
+                    this.player.gright = true;
+                    this.player.gleft = false;
 
+                }
             }
         });
 
