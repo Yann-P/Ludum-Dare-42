@@ -31,7 +31,7 @@ module.exports = class Play extends Phaser.Scene {
         this.petrolGroup = this.add.group();
         this.enemiesGroup = this.add.group();
 
-        this.petrolQtty = 10;
+        this.petrolQtty = 0;
 
         this.background = this.add.tileSprite(0, 0, this.sys.canvas.width, this.sys.canvas.height, 'bg')
         this.background.setOrigin(0,0)
@@ -40,7 +40,7 @@ module.exports = class Play extends Phaser.Scene {
 
         const { lx, ly } = this.loadLevel();
         this.setupLight(lx, ly);
-        this.setLightRadius(4000)
+        this.setLightRadius(1000)
         this.children.bringToTop(this.player)
         this.children.bringToTop(this.light)
 
@@ -62,7 +62,7 @@ module.exports = class Play extends Phaser.Scene {
 
         if(!g.device.os.desktop) { // huge hack lol
         this.input.on('pointerdown',  (pointer) => {
-            if(pointer.y < this.sys.canvas.height *3/4) {
+            if(pointer.y < this.sys.canvas.height *0.6) {
                 this.player.gup = true;
             } 
             
