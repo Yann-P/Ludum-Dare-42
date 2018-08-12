@@ -8,12 +8,13 @@ module.exports = class Play extends Scene {
 
     constructor() {
         super('PlayScene');
+        this._i=0;
     }
 
     preload() {
         this.load.spritesheet('player', 'assets/player.png', { frameWidth: 46, frameHeight: 34 });
 
-        for(const n of ['bg', 'light', 'particle', 'bubble', 'platform', 'petrol'])
+        for(const n of ['bg', 'sun', 'light', 'particle', 'bubble', 'platform', 'petrol'])
             this.load.image(n,  `assets/${n}.png`);
 
         for (let i = 1; i <= 1; i++) {
@@ -22,17 +23,21 @@ module.exports = class Play extends Scene {
     }
 
     create(data) {
-        this.levelId = data.levelId || 1;
+        this.levelId = data.levelId || 1; 
         this.player = null;
         this.platformsGroup = this.add.group();
         this.petrolGroup = this.add.group();
+        this.petrolQtty = 10;
 
         this.background = this.add.tileSprite(0, 0, 800, 600, 'bg').setScale(3)
         this.lightRadius = 300;
 
         const { lx, ly } = this.loadLevel();
         this.setupLight(lx, ly);
-        this.setLightRadius(3000)
+        this.setLightRadius(300)
+        this.children.bringToTop(this.player)
+        this.children.bringToTop(this.light)
+
 
         this.physics.add.collider(this.petrolGroup, this.player, (pe, pl) => {
             pl.setDrinking(true);
@@ -41,8 +46,9 @@ module.exports = class Play extends Scene {
             pe.body.y++
             pe.body.height--
 
-            //pe.body.updateBounds();
+            this.petrolQtty++;
         });
+
     }
 
     setLightRadius(r) {
@@ -52,6 +58,8 @@ module.exports = class Play extends Scene {
 
     setupLight(x, y) {
         this.light = new Light(this, x, y)
+        this.sun = this.add.sprite(x+11, y+4, 'sun')
+        this.sun.setScale(2)
         this.add.existing(this.light)
     }
 
@@ -74,9 +82,9 @@ module.exports = class Play extends Scene {
                 case 'player':
                     this.addPlayer(x, y, w, h)
                     break;
-
-                case 'light':
-                    lx = x, ly = y; break;
+                case 'flame':
+                    lx = x, ly = y; 
+                    break;
                 case 'petrol':
                     this.addPetrol(x, y, w, h);
                     break;
@@ -93,7 +101,9 @@ module.exports = class Play extends Scene {
         this.player = new Player(this, x, y);
         this.add.existing(this.player)
         this.physics.add.existing(this.player);
-        this.physics.add.collider(this.platformsGroup, this.player);
+        this.physics.add.collider(this.platformsGroup, this.player, (plat, play) => {
+            play.setDrinking(false)
+        });
     }
 
     addPetrol(x, y, w, h) {
@@ -122,9 +132,21 @@ module.exports = class Play extends Scene {
     }
 
     update() {
-        this.light.x = this.player.x, this.light.y = this.player.y
-
+        this._i++
         this.player.update();
+        if(!Phaser.Geom.Rectangle.Intersection(this.sun.getBounds(), 
+            this.player.getBounds()).isEmpty() && this.petrolQtty != 0 && this._i % 2 == 0) {
+
+            this.player.setVomit(true)
+            this.setLightRadius(this.lightRadius+100)
+            this.petrolQtty--;
+        } else {
+            this.player.setVomit(false)
+        }
+
+        if(this.lightRadius > 200) {
+            this.setLightRadius(this.lightRadius-1)
+        }
     }
 
 }
