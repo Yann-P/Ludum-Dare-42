@@ -9,15 +9,15 @@ module.exports = class Play extends Phaser.Scene {
 
     constructor() {
         super('PlayScene');
-        this._i=0;
+        this._i = 0;
     }
 
     preload() {
         this.load.spritesheet('player', 'assets/player.png', { frameWidth: 46, frameHeight: 34 });
 
-        for(const n of ['bg', 'bomb', 'sun', 'light', 'spark', 'cactus',
-                        'particle', 'bubble', 'platform', 'petrol'])
-            this.load.image(n,  `assets/${n}.png`);
+        for (const n of ['bg', 'bomb', 'sun', 'light', 'spark', 'cactus',
+            'particle', 'bubble', 'platform', 'petrol'])
+            this.load.image(n, `assets/${n}.png`);
 
         for (let i = 1; i <= 1; i++) {
             this.load.json(`level-${i}`, `maps/${i}.json`);
@@ -25,7 +25,7 @@ module.exports = class Play extends Phaser.Scene {
     }
 
     create(data) {
-        this.levelId = data.levelId || 1; 
+        this.levelId = data.levelId || 1;
         this.player = null;
         this.platformsGroup = this.add.group();
         this.petrolGroup = this.add.group();
@@ -33,13 +33,14 @@ module.exports = class Play extends Phaser.Scene {
 
         this.petrolQtty = 10;
 
-        this.background = this.add.tileSprite(0, 0, this.sys.canvas.width, this.sys.canvas.height, 'bg').setScale(3)
+        this.background = this.add.tileSprite(0, 0, this.sys.canvas.width, this.sys.canvas.height, 'bg')
+        this.background.setOrigin(0,0)
         this.background.setScrollFactor(0)
         this.lightRadius = 300;
 
         const { lx, ly } = this.loadLevel();
         this.setupLight(lx, ly);
-        this.setLightRadius(1000)
+        this.setLightRadius(10000)
         this.children.bringToTop(this.player)
         this.children.bringToTop(this.light)
 
@@ -48,8 +49,8 @@ module.exports = class Play extends Phaser.Scene {
 
         this.physics.add.collider(this.petrolGroup, this.player, (pe, pl) => {
             pl.setDrinking(true);
-            pe.height-=.5
-            pe.y+=.5
+            pe.height -= .5
+            pe.y += .5
             pe.body.y++
             pe.body.height--
 
@@ -68,7 +69,7 @@ module.exports = class Play extends Phaser.Scene {
 
     setupLight(x, y) {
         this.light = new Light(this, x, y)
-        this.sun = this.add.sprite(x+11, y+4, 'sun')
+        this.sun = this.add.sprite(x, y, 'sun')
         this.sun.setScale(2)
         this.add.existing(this.light)
     }
@@ -97,7 +98,7 @@ module.exports = class Play extends Phaser.Scene {
                     this.addPlayer(x, y, w, h)
                     break;
                 case 'flame':
-                    lx = x, ly = y; 
+                    lx = x, ly = y;
                     break;
                 case 'petrol':
                     this.addPetrol(x, y, w, h);
@@ -150,12 +151,12 @@ module.exports = class Play extends Phaser.Scene {
             h,
             'platform')
 
-        sprite.setOrigin(0,0)
+        sprite.setOrigin(0, 0)
         sprite.setScale(3);
-        
+
         this.physics.add.existing(sprite, false);
         this.platformsGroup.add(sprite);
-        sprite.setSize(w/3, h/3);
+        sprite.setSize(w / 3, h / 3);
 
         sprite.body.immovable = true;
         sprite.body.allowGravity = false
@@ -165,25 +166,34 @@ module.exports = class Play extends Phaser.Scene {
     update() {
         this._i++
         this.player.update();
-        if(!Phaser.Geom.Rectangle.Intersection(this.sun.getBounds(), 
+        if (!Phaser.Geom.Rectangle.Intersection(this.sun.getBounds(),
             this.player.getBounds()).isEmpty() && this.petrolQtty != 0 && this._i % 2 == 0) {
 
             this.player.setVomit(true)
-            this.setLightRadius(this.lightRadius+100)
+            this.setLightRadius(this.lightRadius + 100)
             this.petrolQtty--;
         } else {
             this.player.setVomit(false)
         }
 
-        if(this.lightRadius > 200) {
-            this.setLightRadius(this.lightRadius-1)
+        if (this.lightRadius > 200) {
+            this.setLightRadius(this.lightRadius - 1)
+        } else {
+            this.gameover()
         }
 
 
-        if(Phaser.Math.Distance.Between(this.player.x, this.player.y,
-            this.sun.x, this.sun.y) > this.lightRadius - 200) {
-                console.log('gameover')
-            }
+        if (Phaser.Math.Distance.Between(this.player.x, this.player.y,
+            this.sun.x, this.sun.y) > this.lightRadius) {
+            this.gameover()
+        }
+    }
+
+    gameover() {
+        //alert('You lost yourself in the darkness\na.k.a. the dev had no time for a proper game over screen ;)');
+        g.scene.stop('PlayScene');
+        window.location.reload();
+
     }
 
 }

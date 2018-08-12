@@ -16,7 +16,7 @@ module.exports = class Player extends Phaser.Physics.Arcade.Sprite {
             radial: false,
             lifespan: 500,
             gravityY: 200,
-            alpha: { start: 1, end: 0, ease: 'Expo.easeIn' },
+            alpha: { start: .8, end: 0, ease: 'Expo.easeIn' },
             scale: { start: .5, end: 2, ease: 'Power3' },
         });
 

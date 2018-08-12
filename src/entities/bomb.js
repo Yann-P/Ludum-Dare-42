@@ -38,27 +38,32 @@ module.exports = class Bomb extends Phaser.Physics.Arcade.Sprite {
         // THE BEST KIND OF AI
         // vvvvvvvvvvvvvvvvvvv
 
-        if(rnd.nextFloat() < .1) {
-            this.jump();
-        }
-        
-        if(rnd.nextFloat() < .1) {
-            this.setVelocityX(100)
-        }
+        if(Phaser.Math.Distance.Between(this.scene.player.x, this.scene.player.y,
+            this.x, this.y) < 500) {
 
-        if(rnd.nextFloat() < .1) {
-            this.setVelocityX(-100)
+            if(rnd.nextFloat() < .1) {
+                this.jump();
+            }
+            
+            if(rnd.nextFloat() < .1) {
+                this.setVelocityX(100)
+            }
 
+            if(rnd.nextFloat() < .1) {
+                this.setVelocityX(-100)
+
+            }
+
+            if(rnd.nextFloat() < .1) {
+                this.setVelocityX(0)
+            }
         }
+        if(Phaser.Math.Distance.Between(this.scene.player.x, this.scene.player.y,
+                this.x, this.y) < 100) {
 
-        if(rnd.nextFloat() < .1) {
-            this.setVelocityX(0)
-        }
-
-        if(rnd.nextFloat() < .3
-            && Phaser.Math.Distance.Between(this.scene.player.x, this.scene.player.y,
-            this.x, this.y) < 200) {
-            this.explode();
+            if(rnd.nextFloat() < .3){
+                this.explode();
+            }
         }
     }
 
