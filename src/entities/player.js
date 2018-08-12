@@ -16,7 +16,24 @@ module.exports = class Player extends Phaser.Physics.Arcade.Sprite {
             radial: false,
             lifespan: 500,
             gravityY: 200,
-            scale: { start: .5, end: 1, ease: 'Power3' },
+            alpha: { start: 1, end: 0, ease: 'Expo.easeIn' },
+            scale: { start: .5, end: 2, ease: 'Power3' },
+        });
+
+        scene.tweens.add({
+            targets: this,
+            scaleX: 1.1,
+            duration: 300,
+            yoyo: true,
+            loop: -1
+        });
+
+        scene.tweens.add({
+            targets: this,
+            scaleY: .9,
+            duration: 300,
+            yoyo: true,
+            loop: -1
         });
 
 
@@ -48,7 +65,7 @@ module.exports = class Player extends Phaser.Physics.Arcade.Sprite {
         
         this.vEmitter.on  = this.isVomitting
         this.vEmitter.setPosition(this.x + (this.direction ? 15 : -15), this.y);
-        this.vEmitter.setSpeed({min: 50, max: 100}) // fuck encapsulation this is a jam
+        this.vEmitter.setSpeed({min: 100, max: 100}) // fuck encapsulation this is a jam
         this.vEmitter.setAngle(Phaser.Math.Angle.Between(
 
             this.x, this.y, this.scene.sun.x, this.scene.sun.y
@@ -58,19 +75,19 @@ module.exports = class Player extends Phaser.Physics.Arcade.Sprite {
 
 
         if (this.cursors.left.isDown) {
-            this.setVelocityX(-260);
+            this.controllable && this.setVelocityX(-260);
             this.direction = false;
         }
         else if (this.cursors.right.isDown) {
-            this.setVelocityX(260);
+            this.controllable && this.setVelocityX(260);
             this.direction = true;
         }
         else {
-            this.setVelocityX(0);
+            this.controllable && this.setVelocityX(0);
         }
 
         if (this.cursors.up.isDown && this.body.touching.down) {
-            this.setVelocityY(-500);
+            this.controllable && this.setVelocityY(-500);
         } 
 
         if(this.isVomitting) {

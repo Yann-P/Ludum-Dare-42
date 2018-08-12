@@ -2,6 +2,7 @@ const Player = require('../entities/player.js');
 const Light = require('../entities/light.js');
 const Petrol = require('../entities/petrol.js');
 const Bomb = require('../entities/bomb.js');
+const Cacti = require('../entities/cacti.js');
 
 
 module.exports = class Play extends Phaser.Scene {
@@ -14,7 +15,7 @@ module.exports = class Play extends Phaser.Scene {
     preload() {
         this.load.spritesheet('player', 'assets/player.png', { frameWidth: 46, frameHeight: 34 });
 
-        for(const n of ['bg', 'bomb', 'sun', 'light', 'spark',
+        for(const n of ['bg', 'bomb', 'sun', 'light', 'spark', 'cactus',
                         'particle', 'bubble', 'platform', 'petrol'])
             this.load.image(n,  `assets/${n}.png`);
 
@@ -32,16 +33,19 @@ module.exports = class Play extends Phaser.Scene {
 
         this.petrolQtty = 10;
 
-        this.background = this.add.tileSprite(0, 0, 800, 600, 'bg').setScale(3)
+        this.background = this.add.tileSprite(0, 0, this.sys.canvas.width, this.sys.canvas.height, 'bg').setScale(3)
+        this.background.setScrollFactor(0)
         this.lightRadius = 300;
 
         const { lx, ly } = this.loadLevel();
         this.setupLight(lx, ly);
-        this.setLightRadius(3000)
+        this.setLightRadius(1000)
         this.children.bringToTop(this.player)
         this.children.bringToTop(this.light)
 
         this.physics.add.collider(this.platformsGroup, this.enemiesGroup);
+        this.physics.add.collider(this.petrolGroup, this.enemiesGroup);
+
         this.physics.add.collider(this.petrolGroup, this.player, (pe, pl) => {
             pl.setDrinking(true);
             pe.height-=.5
@@ -51,6 +55,8 @@ module.exports = class Play extends Phaser.Scene {
 
             this.petrolQtty++;
         });
+
+        this.cameras.main.startFollow(this.player);
 
 
     }
@@ -72,6 +78,10 @@ module.exports = class Play extends Phaser.Scene {
         const level = this.cache.json.get(`level-${this.levelId}`);
         this.levelW = level.width;
         this.levelH = level.height;
+
+        console.log(this.levelW * CONFIG.TILESIZE)
+        this.cameras.main.setBounds(0, 0, this.levelW * CONFIG.TILESIZE, this.levelH * CONFIG.TILESIZE);
+
         const platforms = level.layers.find(l => l.name === 'platforms');
         if (!platforms) throw new Error(`can't find platforms layer`);
 
@@ -95,6 +105,9 @@ module.exports = class Play extends Phaser.Scene {
                 case 'bomb':
                     this.addBomb(x, y);
                     break;
+                case 'cacti':
+                    this.addCacti(x, y);
+                    break;
                 default:
                     this.addPlatform(x, y, w, h)
 
@@ -106,11 +119,14 @@ module.exports = class Play extends Phaser.Scene {
 
     addBomb(x, y) {
         const bomb = new Bomb(this, x, y);
-
         this.add.existing(bomb)
         this.enemiesGroup.add(bomb)
-        
+    }
 
+    addCacti(x, y) {
+        const cacti = new Cacti(this, x, y);
+        this.add.existing(cacti)
+        this.enemiesGroup.add(cacti)
     }
 
     addPlayer(x, y, w, h) {
@@ -124,7 +140,6 @@ module.exports = class Play extends Phaser.Scene {
 
     addPetrol(x, y, w, h) {
         const petrol = new Petrol(this, x, y, w, h)
-        //this.petrolGroup.add(petrol);
     }
 
     addPlatform(x, y, w, h) {
@@ -163,6 +178,12 @@ module.exports = class Play extends Phaser.Scene {
         if(this.lightRadius > 200) {
             this.setLightRadius(this.lightRadius-1)
         }
+
+
+        if(Phaser.Math.Distance.Between(this.player.x, this.player.y,
+            this.sun.x, this.sun.y) > this.lightRadius - 200) {
+                console.log('gameover')
+            }
     }
 
 }

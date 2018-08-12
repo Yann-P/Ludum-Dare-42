@@ -55,7 +55,9 @@ module.exports = class Bomb extends Phaser.Physics.Arcade.Sprite {
             this.setVelocityX(0)
         }
 
-        if(rnd.nextFloat() < .1) {
+        if(rnd.nextFloat() < .3
+            && Phaser.Math.Distance.Between(this.scene.player.x, this.scene.player.y,
+            this.x, this.y) < 200) {
             this.explode();
         }
     }
@@ -72,18 +74,21 @@ module.exports = class Bomb extends Phaser.Physics.Arcade.Sprite {
     }
 
     explode() {
+        this.scene.player.setControllable(false)
         const particles = this.scene.add.particles('spark')
         particles.createEmitter({
             radial: true,
             lifespan: 300,
-            quantity: 100,
+            quantity: 10,
             x: this.x,
             y: this.y,
             speed: {min:100, max: 500},
             alpha: { start: 1, end: 0.5, ease: 'Power3' },
             scale: { start: 6, end: 2, ease: 'Power3' },
         });
-        this.scene.time.delayedCall(150, () => {
+        this.scene.time.delayedCall(200, () => {
+            this.scene.player.setControllable(true)
+
             particles.destroy();
             this.destroy();
         });
@@ -91,8 +96,8 @@ module.exports = class Bomb extends Phaser.Physics.Arcade.Sprite {
 
         const player = this.scene.player; 
         const angle = Phaser.Math.Angle.Between(this.x, this.y, player.x, player.y); // radian
-        const force = 1000
-        this.scene.player.setVelocity(Math.cos(angle) * force, Math.sin(angle) * force)
+        const force = 400
+        this.scene.player.setVelocity(Math.cos(angle) * force, Math.sin(angle) * force - 400)
 
         
         

@@ -5,8 +5,8 @@ class Game extends Phaser.Game {
 
     constructor() {
         super({
-            width: 900*3,
-            height: 600*3,
+            width: window.innerWidth,
+            height: window.innerHeight,
             pixelArt: true,
             scene: [ Play ],
             render: {
