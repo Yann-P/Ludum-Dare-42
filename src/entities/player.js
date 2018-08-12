@@ -74,11 +74,11 @@ module.exports = class Player extends Phaser.Physics.Arcade.Sprite {
 
 
 
-        if (this.cursors.left.isDown) {
+        if (this.cursors.left.isDown || this.gleft) {
             this.controllable && this.setVelocityX(-260);
             this.direction = false;
         }
-        else if (this.cursors.right.isDown) {
+        else if (this.cursors.right.isDown || this.gright) {
             this.controllable && this.setVelocityX(260);
             this.direction = true;
         }
@@ -86,7 +86,7 @@ module.exports = class Player extends Phaser.Physics.Arcade.Sprite {
             this.controllable && this.setVelocityX(0);
         }
 
-        if (this.cursors.up.isDown && this.body.touching.down) {
+        if ((this.cursors.up.isDown || this.gup) && this.body.touching.down) {
             this.controllable && this.setVelocityY(-500);
         } 
 

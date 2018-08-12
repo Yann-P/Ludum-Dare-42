@@ -40,7 +40,7 @@ module.exports = class Play extends Phaser.Scene {
 
         const { lx, ly } = this.loadLevel();
         this.setupLight(lx, ly);
-        this.setLightRadius(10000)
+        this.setLightRadius(4000)
         this.children.bringToTop(this.player)
         this.children.bringToTop(this.light)
 
@@ -59,6 +59,25 @@ module.exports = class Play extends Phaser.Scene {
 
         this.cameras.main.startFollow(this.player);
 
+
+        if(!g.device.os.desktop) { // huge hack lol
+        this.input.on('pointerdown',  (pointer) => {
+            if(pointer.y < this.sys.canvas.height * 3/4) {
+                this.player.gup = true;
+            } else if(pointer.x < this.sys.canvas.width / 2) {
+                this.player.gleft = true;
+                this.player.gright = false;
+            } if(pointer.x > this.sys.canvas.width / 2) {
+                this.player.gright = true;
+                this.player.gleft = false;
+
+            }
+        });
+
+        this.input.on('pointerup',  (pointer) => {
+            this.player.gright = this.player.gleft = this.player.gup = false;
+        });
+     }
 
     }
 
