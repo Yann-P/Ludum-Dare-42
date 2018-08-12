@@ -1,4 +1,3 @@
-const Phaser = require('phaser');
 
 module.exports = class Petrol extends Phaser.GameObjects.TileSprite {
 

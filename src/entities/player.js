@@ -1,6 +1,3 @@
-const Phaser = require('phaser')
-
-
 module.exports = class Player extends Phaser.Physics.Arcade.Sprite {
 
     constructor(scene, x, y) {
@@ -9,6 +6,7 @@ module.exports = class Player extends Phaser.Physics.Arcade.Sprite {
         this.direction = false; // true = right
         this.isDrinking = false;
         this.isVomitting = false;
+        this.controllable = true;
 
 
         this.bubbles = scene.add.particles('bubble')
@@ -39,6 +37,7 @@ module.exports = class Player extends Phaser.Physics.Arcade.Sprite {
         this.wEmitter.setAlpha({ start: .7, end: 0, ease: 'Expo.easeIn' });
         this.wEmitter.setFrequency(100)
     }
+    setControllable(v) {this.controllable = v;}
 
 
     update() {

@@ -136,6 +136,28 @@
                  "width":3,
                  "x":43,
                  "y":7
+                }, 
+                {
+                 "height":1,
+                 "id":37,
+                 "name":"",
+                 "rotation":0,
+                 "type":"bomb",
+                 "visible":true,
+                 "width":1,
+                 "x":15,
+                 "y":3
+                }, 
+                {
+                 "height":1,
+                 "id":38,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":5,
+                 "x":35,
+                 "y":10
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -143,7 +165,7 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":37,
+ "nextobjectid":39,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.0.3",

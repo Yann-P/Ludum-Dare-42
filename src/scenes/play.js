@@ -1,10 +1,10 @@
-const Scene = require('phaser').Scene;
 const Player = require('../entities/player.js');
 const Light = require('../entities/light.js');
 const Petrol = require('../entities/petrol.js');
+const Bomb = require('../entities/bomb.js');
 
 
-module.exports = class Play extends Scene {
+module.exports = class Play extends Phaser.Scene {
 
     constructor() {
         super('PlayScene');
@@ -14,7 +14,8 @@ module.exports = class Play extends Scene {
     preload() {
         this.load.spritesheet('player', 'assets/player.png', { frameWidth: 46, frameHeight: 34 });
 
-        for(const n of ['bg', 'sun', 'light', 'particle', 'bubble', 'platform', 'petrol'])
+        for(const n of ['bg', 'bomb', 'sun', 'light', 'spark',
+                        'particle', 'bubble', 'platform', 'petrol'])
             this.load.image(n,  `assets/${n}.png`);
 
         for (let i = 1; i <= 1; i++) {
@@ -27,6 +28,8 @@ module.exports = class Play extends Scene {
         this.player = null;
         this.platformsGroup = this.add.group();
         this.petrolGroup = this.add.group();
+        this.enemiesGroup = this.add.group();
+
         this.petrolQtty = 10;
 
         this.background = this.add.tileSprite(0, 0, 800, 600, 'bg').setScale(3)
@@ -34,11 +37,11 @@ module.exports = class Play extends Scene {
 
         const { lx, ly } = this.loadLevel();
         this.setupLight(lx, ly);
-        this.setLightRadius(300)
+        this.setLightRadius(3000)
         this.children.bringToTop(this.player)
         this.children.bringToTop(this.light)
 
-
+        this.physics.add.collider(this.platformsGroup, this.enemiesGroup);
         this.physics.add.collider(this.petrolGroup, this.player, (pe, pl) => {
             pl.setDrinking(true);
             pe.height-=.5
@@ -48,6 +51,7 @@ module.exports = class Play extends Scene {
 
             this.petrolQtty++;
         });
+
 
     }
 
@@ -88,12 +92,24 @@ module.exports = class Play extends Scene {
                 case 'petrol':
                     this.addPetrol(x, y, w, h);
                     break;
+                case 'bomb':
+                    this.addBomb(x, y);
+                    break;
                 default:
                     this.addPlatform(x, y, w, h)
 
             }
         }
         return { lx, ly };
+
+    }
+
+    addBomb(x, y) {
+        const bomb = new Bomb(this, x, y);
+
+        this.add.existing(bomb)
+        this.enemiesGroup.add(bomb)
+        
 
     }
 

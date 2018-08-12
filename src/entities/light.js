@@ -1,6 +1,4 @@
 
-const Phaser = require('phaser');
-
 module.exports = class Light extends Phaser.GameObjects.Sprite {
 
 
